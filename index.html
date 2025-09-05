@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Commission Calculator</title>
+    <!-- Tailwind CSS for modern, responsive styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -31,14 +32,17 @@
             Input weekly sales for each team member to automatically calculate commissions.
         </p>
 
+        <!-- Main container for people -->
         <div id="people-container" class="space-y-10">
 
+            <!-- Matt's Section (Permanent) -->
             <div id="matt-card" class="bg-gray-50 rounded-lg p-6 border border-gray-200 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-semibold text-indigo-700">Matt - Sales Manager</h2>
                 </div>
                 <div id="matt-sales-container" class="space-y-4">
-                    </div>
+                    <!-- Sales inputs will be added here -->
+                </div>
                 <div class="mt-4 flex justify-end">
                     <button type="button" onclick="addSale('matt')" class="px-4 py-2 bg-indigo-500 text-white text-sm font-medium rounded-md shadow-sm hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Add Sale
@@ -46,9 +50,12 @@
                 </div>
             </div>
 
+            <!-- Salesperson container -->
             <div id="salespeople-container" class="space-y-6">
-                </div>
+                <!-- Salesperson cards will be added here dynamically -->
+            </div>
 
+            <!-- Add Salesperson Button -->
             <div class="mt-8 text-center">
                 <button id="add-salesperson-btn" class="px-6 py-3 bg-indigo-600 text-white text-lg font-bold rounded-lg shadow-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Add Salesperson
@@ -56,12 +63,14 @@
             </div>
         </div>
 
+        <!-- Calculation and results section -->
         <div class="mt-12 text-center">
             <button id="calculate-btn" class="w-full px-8 py-4 bg-green-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 Calculate Commissions
             </button>
         </div>
         
+        <!-- New container for the results list -->
         <div id="results-container" class="mt-12 space-y-4"></div>
     </div>
 
@@ -82,6 +91,11 @@
         };
 
         let salespersonCount = 0;
+
+        // Helper function to format currency with commas
+        const formatCurrency = (amount) => {
+            return parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        };
 
         // Function to create a single sale input element
         const createSaleInput = (personId) => {
@@ -140,7 +154,8 @@
                     </div>
                 </div>
                 <div id="${personId}-sales-container" class="space-y-4">
-                    </div>
+                    <!-- Sales inputs for this person -->
+                </div>
                 <div class="mt-4 flex justify-end">
                     <button type="button" onclick="addSale('${personId}')" class="px-4 py-2 bg-indigo-500 text-white text-sm font-medium rounded-md shadow-sm hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Add Sale
@@ -280,7 +295,7 @@
                 const mattSection = document.createElement('div');
                 mattSection.className = 'bg-gray-100 p-4 rounded-lg shadow-sm animate-fade-in-down';
                 mattSection.innerHTML = `
-                    <h3 class="text-lg font-bold text-indigo-700">Matt - Sales Manager Total: <span class="text-green-600">$${(mattData.baseTotal + mattData.bonusTotal).toFixed(2).toLocaleString('en-US')}</span></h3>
+                    <h3 class="text-lg font-bold text-indigo-700">Matt - Sales Manager Total: <span class="text-green-600">$${formatCurrency(mattData.baseTotal + mattData.bonusTotal)}</span></h3>
                     <ul class="list-disc list-inside mt-2 space-y-1"></ul>
                 `;
                 const mattList = mattSection.querySelector('ul');
@@ -288,7 +303,7 @@
                 mattData.baseCommissions.forEach(sale => {
                     const item = document.createElement('li');
                     item.className = 'text-sm text-gray-600';
-                    item.innerHTML = `Base Commission: $${sale.amount.toFixed(2).toLocaleString('en-US')} on sale to ${sale.customer} (${sale.rate})`;
+                    item.innerHTML = `Base Commission: $${formatCurrency(sale.amount)} on sale to ${sale.customer} (${sale.rate})`;
                     mattList.appendChild(item);
                 });
 
@@ -296,7 +311,7 @@
                     mattData.bonusCommissions.forEach(bonus => {
                         const item = document.createElement('li');
                         item.className = 'text-sm text-gray-600';
-                        item.innerHTML = `Bonus: $${bonus.amount.toFixed(2).toLocaleString('en-US')} from ${bonus.source}'s sale to ${bonus.customer} (${bonus.rate})`;
+                        item.innerHTML = `Bonus: $${formatCurrency(bonus.amount)} from ${bonus.source}'s sale to ${bonus.customer} (${bonus.rate})`;
                         mattList.appendChild(item);
                     });
                 }
@@ -308,7 +323,7 @@
                 const salespersonSection = document.createElement('div');
                 salespersonSection.className = 'bg-gray-100 p-4 rounded-lg shadow-sm animate-fade-in-down';
                 salespersonSection.innerHTML = `
-                    <h3 class="text-lg font-bold text-gray-800">${person.name} Total: <span class="text-green-600">$${person.total.toFixed(2).toLocaleString('en-US')}</span></h3>
+                    <h3 class="text-lg font-bold text-gray-800">${person.name} Total: <span class="text-green-600">$${formatCurrency(person.total)}</span></h3>
                     <ul class="list-disc list-inside mt-2 space-y-1"></ul>
                 `;
                 const salespersonList = salespersonSection.querySelector('ul');
@@ -316,7 +331,7 @@
                 person.commissions.forEach(sale => {
                     const item = document.createElement('li');
                     item.className = 'text-sm text-gray-600';
-                    item.innerHTML = `Commission: $${sale.amount.toFixed(2).toLocaleString('en-US')} on sale to ${sale.customer} (${sale.rate})`;
+                    item.innerHTML = `Commission: $${formatCurrency(sale.amount)} on sale to ${sale.customer} (${sale.rate})`;
                     salespersonList.appendChild(item);
                 });
                 allResults.appendChild(salespersonSection);
@@ -337,6 +352,3 @@
     </script>
 </body>
 </html>
-```eof
----
-Let me know if you need any other adjustments!
